@@ -1,5 +1,6 @@
 package org.example.e_commerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class CartItem {
     @JoinColumn(name = "cart_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonBackReference
     private Cart cart;
 
     @ManyToOne

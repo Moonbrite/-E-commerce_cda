@@ -1,8 +1,6 @@
 package org.example.e_commerce.service;
 
-import org.example.e_commerce.model.CartItem;
 import org.example.e_commerce.model.Order;
-import org.example.e_commerce.repository.CartItemRepository;
 import org.example.e_commerce.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

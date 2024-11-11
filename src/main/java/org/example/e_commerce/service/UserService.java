@@ -1,12 +1,15 @@
 package org.example.e_commerce.service;
 
 import org.example.e_commerce.execption.UtilisateurDejaPresentEmailException;
+import org.example.e_commerce.model.DTO.UserDTO;
 import org.example.e_commerce.model.User;
 import org.example.e_commerce.repository.UserRepository;
 import org.example.e_commerce.util.HashPasswordUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Service
@@ -43,5 +46,22 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    @Transactional
+    public User registerUser(UserDTO dto) throws NoSuchAlgorithmException {
+        // Transformer le DTO en entité Utilisateur
+        byte[] salt = HashPasswordUser.generateSalt();
+        User user = User.builder()
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
+                .password(HashPasswordUser.hashPassword(dto.getPassword(), salt))
+                .email(dto.getEmail())
+                .build();
+
+        user.setRole("ROLE_USER");
+        user.setSalt(salt);
+
+        // Sauvegarder l'utilisateur dans la base de données
+        return userRepository.save(user);
+    }
 
 }

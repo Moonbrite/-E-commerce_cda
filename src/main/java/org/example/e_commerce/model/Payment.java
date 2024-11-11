@@ -1,5 +1,6 @@
 package org.example.e_commerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,9 +20,11 @@ public class Payment {
     @Builder.Default
     private Long id = null;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonBackReference
     private Order order;
+
     private String paymentIntentId;
 
     private Double amount;
