@@ -27,6 +27,7 @@ public class PaymentController {
         return paymentService.getOneObject(id);
     }
 
+    //TODO Implement Stripe Here
     @PostMapping("/payments")
     @ResponseStatus(code = HttpStatus.CREATED)
     public Payment postPayment(@RequestBody Payment payment) {

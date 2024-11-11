@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 @Builder
 @Data
@@ -25,6 +26,7 @@ public class Payment {
     @JsonBackReference
     private Order order;
 
+    @Value("${stripe.api.key}")
     private String paymentIntentId;
 
     private Double amount;
