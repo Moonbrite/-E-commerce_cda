@@ -60,7 +60,7 @@ L'application devrait maintenant être accessible à l'adresse `http://localhost
 L'API fournit des points de terminaison REST pour interagir avec les différentes ressources. Voici quelques exemples de points d'accès :
 
 ### 1. Créer un utilisateur
-- **URL** : `/api/users`
+- **URL** : `/api/register`
 - **Méthode** : `POST`
 - **Body (JSON)** :
 ```json
@@ -73,7 +73,7 @@ L'API fournit des points de terminaison REST pour interagir avec les différente
 ```
 
 ### 2. Connecter un utilisateur
-- **URL** : `/api/users`
+- **URL** : `/api/auth`
 - **Méthode** : `POST`
 - **Body (JSON)** :
 ```json
