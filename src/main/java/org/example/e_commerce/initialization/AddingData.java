@@ -91,6 +91,28 @@ public class AddingData implements CommandLineRunner {
 
         productRepository.save(product);
 
+
+        Product product2 = new Product();
+
+        product2.setName("Vue sur mer   ");
+        product2.setStock(0);
+        product2.setPrice(49.99);
+        product2.setImageUrl("https://www.photo-paysage.com/albums/userpics/10001/thumb_Un_bouleau_au_bord_d_un_chemin_dans_les_Alpes.jpg");
+        product2.setDescription("Une vue côtière à couper le souffle dévoile une mer d'un bleu turquoise éclatant qui s'étend à perte de vue jusqu'à l'horizon.");
+
+        productRepository.save(product2);
+
+
+        Product product3 = new Product();
+
+        product3.setName("Vue sur mer    ");
+        product3.setStock(55);
+        product3.setPrice(49.99);
+        product3.setImageUrl("https://static.vecteezy.com/ti/vecteur-libre/t1/3623626-coucher-de-soleil-lac-paysage-illustration-gratuit-vectoriel.jpg");
+        product3.setDescription("Une vue côtière à couper le souffle dévoile une mer d'un bleu turquoise éclatant qui s'étend à perte de vue jusqu'à l'horizon.");
+
+        productRepository.save(product3);
+
     }
 
     private void createCart() {
