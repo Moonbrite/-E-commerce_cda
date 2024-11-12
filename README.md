@@ -72,15 +72,26 @@ L'API fournit des points de terminaison REST pour interagir avec les différente
 }
 ```
 
-### 2. Obtenir la liste des utilisateurs
+### 2. Connecter un utilisateur
+- **URL** : `/api/users`
+- **Méthode** : `POST`
+- **Body (JSON)** :
+```json
+{
+  "email": "user@test.fr",
+  "password": "password"
+}
+
+```
+### 3. Obtenir la liste des utilisateurs
 - **URL** : `/api/users`
 - **Méthode** : `GET`
 
-### 3. Obtenir un utilisateur par ID
+### 4. Obtenir un utilisateur par ID
 - **URL** : `/api/users/{id}`
 - **Méthode** : `GET`
 
-### 4. Mettre à jour un utilisateur
+### 5. Mettre à jour un utilisateur
 - **URL** : `/api/users/email/{email}`
 - **Méthode** : `GET`
 - **Body (JSON)** :
