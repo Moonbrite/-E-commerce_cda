@@ -24,7 +24,7 @@ public class OrderItemController {
 
     private final OrderItemService orderItemService;
 
-    private final  OrderService orderService;
+    private final OrderService orderService;
 
     private final ProductService productService;
 
@@ -41,28 +41,28 @@ public class OrderItemController {
 
     @PostMapping("/order/items")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public List<OrderItem> postOrderItems(@RequestBody @Valid List<OrderItemDTO> orderItemDTOs) {
+    public List<OrderItem> postOrderItems(@RequestBody @Valid OrderItemDTO orderItemDTO) {
         List<OrderItem> orderItems = new ArrayList<>();
 
-        for (OrderItemDTO orderItemDTO : orderItemDTOs) {
-            // Récupérer l'ordre associé
-            Order order = orderService.getOneObject((long) orderItemDTO.getOrderId());
 
-            // Récupérer le produit associé
-            Product product = productService.getOneObject((long) orderItemDTO.getProductId());
+        // Récupérer l'ordre associé
+        Order order = orderService.getOneObject((long) orderItemDTO.getOrderId());
 
-            // Créer un nouvel OrderItem
-            OrderItem orderItem = new OrderItem();
-            orderItem.setOrder(order);
-            orderItem.setPrice(orderItemDTO.getPrice());
-            orderItem.setProduct(product);
-            orderItem.setQuantity(orderItemDTO.getQuantity());
+        // Récupérer le produit associé
+        Product product = productService.getOneObject((long) orderItemDTO.getProductId());
+
+        // Créer un nouvel OrderItem
+        OrderItem orderItem = new OrderItem();
+        orderItem.setOrder(order);
+        orderItem.setPrice(orderItemDTO.getPrice());
+        orderItem.setProduct(product);
+        orderItem.setQuantity(orderItemDTO.getQuantity());
 
 
-            // Sauvegarder chaque OrderItem
-            OrderItem savedOrderItem = orderItemService.postObjectOrUpdate(orderItem);
-            orderItems.add(savedOrderItem);
-        }
+        // Sauvegarder chaque OrderItem
+        OrderItem savedOrderItem = orderItemService.postObjectOrUpdate(orderItem);
+        orderItems.add(savedOrderItem);
+
 
         return orderItems;
     }
