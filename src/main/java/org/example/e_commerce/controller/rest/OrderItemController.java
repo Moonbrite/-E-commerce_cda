@@ -1,14 +1,19 @@
 package org.example.e_commerce.controller.rest;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.example.e_commerce.model.DTO.OrderItemDTO;
 import org.example.e_commerce.model.Order;
 import org.example.e_commerce.model.OrderItem;
+import org.example.e_commerce.model.Product;
 import org.example.e_commerce.service.OrderItemService;
 import org.example.e_commerce.service.OrderService;
+import org.example.e_commerce.service.ProductService;
 import org.example.e_commerce.util.ReponseApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,6 +23,10 @@ public class OrderItemController {
 
 
     private final OrderItemService orderItemService;
+
+    private final  OrderService orderService;
+
+    private final ProductService productService;
 
 
     @GetMapping("/order/items")
@@ -32,9 +41,32 @@ public class OrderItemController {
 
     @PostMapping("/order/items")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public OrderItem postOrderItem(@RequestBody OrderItem orderItem) {
-        return orderItemService.postObjectOrUpdate(orderItem);
+    public List<OrderItem> postOrderItems(@RequestBody @Valid List<OrderItemDTO> orderItemDTOs) {
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        for (OrderItemDTO orderItemDTO : orderItemDTOs) {
+            // Récupérer l'ordre associé
+            Order order = orderService.getOneObject((long) orderItemDTO.getOrderId());
+
+            // Récupérer le produit associé
+            Product product = productService.getOneObject((long) orderItemDTO.getProductId());
+
+            // Créer un nouvel OrderItem
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setPrice(orderItemDTO.getPrice());
+            orderItem.setProduct(product);
+            orderItem.setQuantity(orderItemDTO.getQuantity());
+
+
+            // Sauvegarder chaque OrderItem
+            OrderItem savedOrderItem = orderItemService.postObjectOrUpdate(orderItem);
+            orderItems.add(savedOrderItem);
+        }
+
+        return orderItems;
     }
+
 
     @DeleteMapping("/order/items/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
