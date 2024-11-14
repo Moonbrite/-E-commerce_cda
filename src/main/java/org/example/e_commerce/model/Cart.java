@@ -24,8 +24,11 @@ public class Cart {
     @JsonBackReference
     private User user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cart", orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<CartItem> items = new ArrayList<>();
+
+
+
 }

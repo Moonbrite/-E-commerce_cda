@@ -16,8 +16,8 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @JsonBackReference
