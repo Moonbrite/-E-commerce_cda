@@ -17,7 +17,7 @@ public class CartItem {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
+    @JoinColumn(name = "cart_id",nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @JsonBackReference
