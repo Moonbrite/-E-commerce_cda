@@ -58,7 +58,18 @@ public class CartItemController {
     @DeleteMapping("/cart/items/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteCartItem(@PathVariable Long id) {
+
+        CartItem cartItem = cartItemService.getOneObject(id);
+        Cart cart = cartItem.getCart();
         cartItemService.deleteObject(id);
+
+        int cartSize =  cart.getItems().size();
+
+
+        if (cartSize == 0){
+            cartService.deleteObject(cart.getId());
+        }
+
     }
 
 
