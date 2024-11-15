@@ -3,6 +3,8 @@ package org.example.e_commerce.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,4 +31,10 @@ public class Product {
 
     @Column(nullable = false)
     private String imageUrl; // URL de l'image du produit
+
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false) // Une catégorie est obligatoire
+    private Category category;
+
 }

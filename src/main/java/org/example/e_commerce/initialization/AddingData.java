@@ -29,6 +29,7 @@ public class AddingData implements CommandLineRunner {
     private PaymentRepository paymentRepository;
     private ProductRepository productRepository;
     private UserRepository userRepository;
+    private CategoryRepository categoryRepository;
 
     @Transactional
     @Override
@@ -39,12 +40,10 @@ public class AddingData implements CommandLineRunner {
         System.out.println("============= Ajout des donnee start ===============");
 
         createUser();
+        createCategory();
         createProduct();
-        createCart();
-        createCartItem();
-        createOrder();
-        createOrderItem();
-        createPayment();
+        createProducts();
+
 
         Instant instantFin = Instant.now();
 
@@ -54,6 +53,36 @@ public class AddingData implements CommandLineRunner {
         System.out.println("====================================================");
 
     }
+
+    private void createCategory() {
+        // Catégorie parente
+        Category parentCategory = new Category();
+        parentCategory.setName("Paysage");
+
+        // Sous-catégorie 1
+        Category mountainCategory = new Category();
+        mountainCategory.setName("Montagnes");
+        mountainCategory.setParent(parentCategory);
+
+        // Sous-catégorie 2
+        Category beachCategory = new Category();
+        beachCategory.setName("Plages");
+        beachCategory.setParent(parentCategory);
+
+        // Sous-catégorie 3
+        Category forestCategory = new Category();
+        forestCategory.setName("Forêts");
+        forestCategory.setParent(parentCategory);
+
+        // Ajouter les sous-catégories à la liste de la catégorie parente
+        parentCategory.getSubCategories().add(mountainCategory);
+        parentCategory.getSubCategories().add(beachCategory);
+        parentCategory.getSubCategories().add(forestCategory);
+
+        // Sauvegarder la catégorie parente dans la base de données
+        categoryRepository.save(parentCategory);
+    }
+
 
     private void createUser() {
 
@@ -82,12 +111,16 @@ public class AddingData implements CommandLineRunner {
     private void createProduct() {
 
         Product product = new Product();
+        Category category = categoryRepository.findByName("Plages");
 
         product.setName("Vue sur mer");
         product.setStock(25);
         product.setPrice(29.99);
         product.setImageUrl("https://www.vuesurmer.fr/images/plage-saleccia.jpg");
         product.setDescription("Une vue côtière à couper le souffle dévoile une mer d'un bleu turquoise éclatant qui s'étend à perte de vue jusqu'à l'horizon.");
+
+
+        product.setCategory(category);
 
         productRepository.save(product);
 
@@ -100,6 +133,8 @@ public class AddingData implements CommandLineRunner {
         product2.setImageUrl("https://www.photo-paysage.com/albums/userpics/10001/thumb_Un_bouleau_au_bord_d_un_chemin_dans_les_Alpes.jpg");
         product2.setDescription("Une vue côtière à couper le souffle dévoile une mer d'un bleu turquoise éclatant qui s'étend à perte de vue jusqu'à l'horizon.");
 
+        product2.setCategory(category);
+
         productRepository.save(product2);
 
 
@@ -110,123 +145,50 @@ public class AddingData implements CommandLineRunner {
         product3.setPrice(49.99);
         product3.setImageUrl("https://static.vecteezy.com/ti/vecteur-libre/t1/3623626-coucher-de-soleil-lac-paysage-illustration-gratuit-vectoriel.jpg");
         product3.setDescription("Une vue côtière à couper le souffle dévoile une mer d'un bleu turquoise éclatant qui s'étend à perte de vue jusqu'à l'horizon.");
+        product3.setCategory(category);
 
         productRepository.save(product3);
 
     }
 
-    private void createCart() {
+    private void createProducts() {
+        // Récupérer les catégories
+        Category mountainCategory = categoryRepository.findByName("Montagnes");
+        Category beachCategory = categoryRepository.findByName("Plages");
+        Category forestCategory = categoryRepository.findByName("Forêts");
 
-        Cart cart = new Cart();
+        // Produit 1 : Montagnes
+        Product mountainProduct = new Product();
+        mountainProduct.setName("Mont Everest");
+        mountainProduct.setDescription("Une vue époustouflante du Mont Everest.");
+        mountainProduct.setPrice(200.0);
+        mountainProduct.setStock(10);
+        mountainProduct.setImageUrl("https://cdn.futura-sciences.com/sources/images/everest-himalaya-montagne.jpeg");
+        mountainProduct.setCategory(mountainCategory);
 
-        User user = userRepository.findByEmail("test@test.fr");
+        // Produit 2 : Plages
+        Product beachProduct = new Product();
+        beachProduct.setName("Plage des Maldives");
+        beachProduct.setDescription("Une plage paradisiaque aux eaux cristallines.");
+        beachProduct.setPrice(150.0);
+        beachProduct.setStock(20);
+        beachProduct.setImageUrl("https://www.voyageursdumonde.fr/voyage-sur-mesure/img/mag/201602/H%C3%B4tel-Lux-South-Ari-Atoll.jpg");
+        beachProduct.setCategory(beachCategory);
 
-        cart.setUser(user);
-        user.setCart(cart);
+        // Produit 3 : Forêts
+        Product forestProduct = new Product();
+        forestProduct.setName("Forêt Amazonienne");
+        forestProduct.setDescription("Un aperçu de la biodiversité incroyable de l'Amazonie.");
+        forestProduct.setPrice(120.0);
+        forestProduct.setStock(15);
+        forestProduct.setImageUrl("https://www.voyage-amazonie.com/sites/default/files/img_page_amazonie/faune/foret-amazonienne.jpg");
+        forestProduct.setCategory(forestCategory);
 
-        userRepository.save(user);
-
+        // Sauvegarder les produits dans la base de données
+        productRepository.save(mountainProduct);
+        productRepository.save(beachProduct);
+        productRepository.save(forestProduct);
     }
 
-    private void createCartItem() {
-
-        int quantity = 1;
-
-        Cart cart = cartRepository.findById(1L).orElse(null);
-        Product product = productRepository.findById(1L).orElse(null);
-
-        CartItem cartItem = new CartItem();
-        cartItem.setCart(cart);
-        cartItem.setProduct(product);
-        cartItem.setQuantity(quantity);
-
-        assert product != null;
-        cartItem.setPrice(product.getPrice() * quantity);
-
-        cartItemRepository.save(cartItem);
-
-    }
-
-    private void createOrder(){
-
-        User user = userRepository.findByEmail("test@test.fr");
-
-
-        Order order = new Order();
-
-        order.setOrderDate(LocalDateTime.now());
-        order.setUser(user);
-        order.setPaymentStatus("Paye");
-        order.setTotalPrice(236.0);
-
-        orderRepository.save(order);
-
-
-    }
-
-    private void  createOrderItem() {
-
-        int quantity = 1;
-
-        List<OrderItem> itemList = new ArrayList<>();
-        Product product = productRepository.findById(1L).orElse(null);
-        Order order = orderRepository.findById(1L).orElse(null);
-
-        OrderItem orderItem = new OrderItem();
-
-        orderItem.setProduct(product);
-        orderItem.setOrder(order);
-
-        assert product != null;
-        orderItem.setPrice(product.getPrice() * quantity);
-        orderItem.setQuantity(quantity);
-
-        itemList.add(orderItem);
-
-        orderItemRepository.save(orderItem);
-
-
-        OrderItem orderItem2 = new OrderItem();
-
-        orderItem2.setProduct(product);
-        orderItem2.setOrder(order);
-
-        assert product != null;
-        orderItem2.setPrice(product.getPrice() * quantity);
-        orderItem2.setQuantity(quantity);
-
-        itemList.add(orderItem2);
-
-        orderItemRepository.save(orderItem2);
-
-
-
-        assert order != null;
-        order.setItems(itemList);
-        orderRepository.save(order);
-
-
-    }
-
-    private void createPayment() {
-
-        Payment payment = new Payment();
-        Order order = orderRepository.findById(1L).orElse(null);
-
-        payment.setPaymentIntentId("idStripeHere");
-        payment.setOrder(order);
-
-        List<OrderItem> orderItemList = orderItemRepository.findByOrderId(1L);
-
-        Double amountTotal = orderItemList.stream()
-                .mapToDouble(OrderItem::getPrice)
-                .sum();
-
-        payment.setAmount(amountTotal);
-        payment.setStatus("paye");
-        payment.setCurrency("euro");
-
-        paymentRepository.save(payment);
-    }
 
 }
