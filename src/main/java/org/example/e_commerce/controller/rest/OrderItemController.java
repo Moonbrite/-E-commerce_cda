@@ -50,6 +50,7 @@ public class OrderItemController {
 
         // Récupérer le produit associé
         Product product = productService.getOneObject((long) orderItemDTO.getProductId());
+        product.setStock(product.getStock() - 1);
 
         // Créer un nouvel OrderItem
         OrderItem orderItem = new OrderItem();
@@ -57,6 +58,9 @@ public class OrderItemController {
         orderItem.setPrice(orderItemDTO.getPrice());
         orderItem.setProduct(product);
         orderItem.setQuantity(orderItemDTO.getQuantity());
+
+
+        productService.postObjectOrUpdate(product);
 
 
         // Sauvegarder chaque OrderItem
