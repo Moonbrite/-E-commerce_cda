@@ -2,15 +2,9 @@ package org.example.e_commerce.controller.rest;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.example.e_commerce.model.Cart;
-import org.example.e_commerce.model.CartItem;
+import org.example.e_commerce.model.*;
 import org.example.e_commerce.model.DTO.OrderDTO;
-import org.example.e_commerce.model.Order;
-import org.example.e_commerce.model.User;
-import org.example.e_commerce.service.CartItemService;
-import org.example.e_commerce.service.CartService;
-import org.example.e_commerce.service.OrderService;
-import org.example.e_commerce.service.UserService;
+import org.example.e_commerce.service.*;
 import org.example.e_commerce.util.ReponseApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +22,7 @@ public class OrderController {
     private final OrderService orderService;
     private final CartService cartService;
     private final UserService userService;
-    private final CartItemService cartItemService;
-
+    private final PaymentService paymentService;
 
     @GetMapping("/orders")
     public List<Order> getOrders() {
@@ -60,7 +53,18 @@ public class OrderController {
             cartService.deleteObject(cart.getId());
         }
 
-        return orderService.postObjectOrUpdate(order);
+        Payment payment = new Payment();
+        payment.setOrder(order);
+        payment.setAmount(order.getTotalPrice());
+        payment.setCurrency("EUR");
+        payment.setStatus("CONFIRM");
+        payment.setPaymentIntentId("No use");
+
+        orderService.postObjectOrUpdate(order);
+
+        paymentService.postObjectOrUpdate(payment);
+
+        return order;
     }
 
     @DeleteMapping("/orders/{id}")
